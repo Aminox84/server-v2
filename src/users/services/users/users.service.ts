@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm/entities/User';
 
-import { CreateUserParams, UpdateUserParams } from 'src/utils/types';
+import { CreateUserParams, CreateUserProfileParams, UpdateUserParams } from 'src/utils/types';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -26,5 +26,20 @@ export class UsersService {
     //L'update du User
     updateUser(id: number, updateUserDetails: UpdateUserParams) {
         return this.userRepository.update({ id }, { ...updateUserDetails });
+    }
+    deleteUser(id: number) {
+        return this.userRepository.delete({ id });
+    }
+    async createUserProfile(
+        id: number,
+        createUserProfileDetails: CreateUserProfileParams,
+    ) {
+        const user = await this.userRepository.findOneBy({ id });
+        if (!user)
+            throw new HttpException(
+                'User pas trouvé, on peut pas crée le profile',
+                HttpStatus.BAD_REQUEST,
+            );
+
     }
 }

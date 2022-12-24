@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Profile } from 'src/typeorm/entities/profile';
 import { User } from 'src/typeorm/entities/User';
 
 import { CreateUserParams, CreateUserProfileParams, UpdateUserParams } from 'src/utils/types';
@@ -7,7 +8,9 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>,
+    constructor(
+        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(Profile) private profileRepository: Repository<Profile>,
     ) { }
 
     //Le get des users
@@ -40,6 +43,11 @@ export class UsersService {
                 'User pas trouvé, on peut pas crée le profile',
                 HttpStatus.BAD_REQUEST,
             );
+
+            const newProfile = this.profileRepository.create(createUserProfileDetails);
+            const savedProfile = await this.profileRepository.save(newProfile);
+            user.profile = savedProfile;
+            return this.userRepository.save(user);
 
     }
 }

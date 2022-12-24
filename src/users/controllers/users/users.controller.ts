@@ -34,7 +34,9 @@ export class UsersController {
     createUserProfile(
         @Param('id', ParseIntPipe) id: number,
         @Body() createUserProfileDto: CreateUserProfileDto,
-    ) {}
+    ) {
+        return this.createUserProfile(id, createUserProfileDto);
+    }
 
 }
 

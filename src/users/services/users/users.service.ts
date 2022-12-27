@@ -17,7 +17,7 @@ export class UsersService {
 
     //Le get des users
     findUsers() {
-        return this.userRepository.find({ relations: ['profile', 'posts'] });
+        return this.userRepository.find({ relations: ['profile'] });
 
     }
     // creation d'un user
